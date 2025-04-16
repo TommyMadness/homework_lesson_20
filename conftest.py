@@ -2,7 +2,7 @@ import pytest
 import os
 import allure
 from pathlib import Path
-from selene import browser, config as selene_config
+from selene import browser
 from appium import webdriver
 from config.config import config
 from utils.allure_attachments import (
@@ -25,8 +25,8 @@ def setup_app():
     if config.platformVersion:
         options["platformVersion"] = config.platformVersion
 
-    selene_config.driver = webdriver.Remote(config.remote_url, options)
-    selene_config.timeout = 10
+    browser.config.driver = webdriver.Remote(config.remote_url, options)
+    browser.config.timeout = 10
 
     yield config.platformName.lower()
 
