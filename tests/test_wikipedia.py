@@ -10,11 +10,10 @@ from selene import browser, have, be
 
 
 @allure.title("Search for 'Selenium' and verify results appear")
-def test_check_search_functionality(mobile_management):
-    with allure.step("Skip iOS app if not Wikipedia"):
-        platform = mobile_management
-        if platform == "ios":
-            pytest.skip("iOS app is not Wikipedia, skipping test.")
+def test_check_search_functionality(setup_app):
+    platform = setup_app
+    if platform == "ios":
+        pytest.skip("iOS app is not Wikipedia, skipping test.")
 
     with allure.step("Click on the search button"):
         browser.element(search_button_locators[platform]).click()
@@ -29,11 +28,10 @@ def test_check_search_functionality(mobile_management):
 
 
 @allure.title("Search for 'BrowserStack' and open article")
-def test_check_that_search_result_can_be_opened(mobile_management):
-    with allure.step("Skip iOS app if not Wikipedia"):
-        platform = mobile_management
-        if platform == "ios":
-            pytest.skip("iOS app is not Wikipedia, skipping test.")
+def test_check_that_search_result_can_be_opened(setup_app):
+    platform = setup_app
+    if platform == "ios":
+        pytest.skip("iOS app is not Wikipedia, skipping test.")
 
     with allure.step("Search for 'BrowserStack'"):
         browser.element(search_button_locators[platform]).click()

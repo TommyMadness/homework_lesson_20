@@ -172,3 +172,12 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# BrowserStack credentials
+.env.credentials
+
+#Allure results
+allure-results/
+
+.env.*
+.idea/
