@@ -1,9 +1,11 @@
 import pytest
 import allure
+from helpers import tap_and_verify
 from selene import browser, have, be
 from appium.webdriver.common.appiumby import AppiumBy
 from locators import (
     article_title_locator,
+    onboarding_locators,
     popup_close_button,
     skip_button_locators,
     search_button_locators,
@@ -57,3 +59,29 @@ def test_check_that_search_result_can_be_opened(setup_app):
 
     with allure.step("Verify article is opened"):
         browser.element(article_title_locator[platform]).should(be.visible)
+
+
+@allure.title("Complete onboarding flow by skipping all 4 screens")
+def test_onboarding_flow(setup_app):
+    platform = setup_app
+
+    tap_and_verify(
+        platform,
+        onboarding_locators["continue"],
+        "Check first onboarding screen and tap 'Continue'",
+    )
+    tap_and_verify(
+        platform,
+        onboarding_locators["continue"],
+        "Check second onboarding screen and tap 'Continue'",
+    )
+    tap_and_verify(
+        platform,
+        onboarding_locators["continue"],
+        "Check third onboarding screen and tap 'Continue'",
+    )
+    tap_and_verify(
+        platform,
+        onboarding_locators["get_started"],
+        "Check fourth onboarding screen and tap 'Get Started'",
+    )

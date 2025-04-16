@@ -29,3 +29,20 @@ article_title_locator = {
     "android": (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BrowserStack")'),
     "ios": None,
 }
+
+onboarding_locators = {
+    "continue": {
+        "android": (
+            AppiumBy.ID,
+            "org.wikipedia.alpha:id/fragment_onboarding_forward_button",
+        ),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Continue"),
+    },
+    "get_started": {
+        "android": (
+            AppiumBy.ID,
+            "org.wikipedia.alpha:id/fragment_onboarding_done_button",
+        ),
+        "ios": (AppiumBy.ACCESSIBILITY_ID, "Get started"),
+    },
+}
