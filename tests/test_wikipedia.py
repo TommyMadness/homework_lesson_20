@@ -1,28 +1,33 @@
 import pytest
 import allure
+from selene import browser, have, be
 from appium.webdriver.common.appiumby import AppiumBy
 from locators import (
+    popup_close_button,
+    skip_button_locators,
     search_button_locators,
     search_input_locators,
     search_result_locators,
 )
-from selene import browser, have, be
 
 
 @allure.title("Search for 'Selenium' and verify results appear")
 def test_check_search_functionality(setup_app):
     platform = setup_app
-    if platform == "ios":
-        pytest.skip("iOS app is not Wikipedia, skipping test.")
+
+    with allure.step("Skip welcome screen if visible"):
+        skip_button = browser.element(skip_button_locators[platform])
+        if skip_button.matching(be.visible):
+            skip_button.click()
 
     with allure.step("Click on the search button"):
         browser.element(search_button_locators[platform]).click()
 
     with allure.step("Type 'Selenium' into search input"):
         browser.element(search_input_locators[platform]).type("Selenium")
-        results = browser.all(search_result_locators[platform])
 
-    with allure.step("Check that search results are present and correct"):
+    with allure.step("Verify that search results are present and correct"):
+        results = browser.all(search_result_locators[platform])
         results.should(have.size_greater_than(0))
         results.first.should(have.text("Selenium"))
 
@@ -30,8 +35,11 @@ def test_check_search_functionality(setup_app):
 @allure.title("Search for 'BrowserStack' and open article")
 def test_check_that_search_result_can_be_opened(setup_app):
     platform = setup_app
-    if platform == "ios":
-        pytest.skip("iOS app is not Wikipedia, skipping test.")
+
+    with allure.step("Skip welcome screen if visible"):
+        skip_button = browser.element(skip_button_locators[platform])
+        if skip_button.matching(be.visible):
+            skip_button.click()
 
     with allure.step("Search for 'BrowserStack'"):
         browser.element(search_button_locators[platform]).click()
@@ -41,7 +49,10 @@ def test_check_that_search_result_can_be_opened(setup_app):
     with allure.step("Click on the first result"):
         results.first.click()
 
+    with allure.step("Close 'Wikipedia games' popup if visible"):
+        popup_close = browser.element(popup_close_button[platform])
+        if popup_close.wait_until(be.present) and popup_close.matching(be.visible):
+            popup_close.click()
+
     with allure.step("Verify article is opened"):
-        browser.element(
-            (AppiumBy.ANDROID_UIAUTOMATOR, 'new UiSelector().text("BrowserStack")')
-        ).should(be.visible)
+        browser.element(article_title_locator[platform]).should(be.visible)

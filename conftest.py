@@ -2,6 +2,8 @@ import pytest
 import os
 import allure
 from pathlib import Path
+
+from appium.options.android import UiAutomator2Options
 from selene import browser
 from appium import webdriver
 from config.config import config
@@ -16,16 +18,18 @@ IS_BSTACK = config.remote_url.startswith("http")
 
 @pytest.fixture(scope="function")
 def setup_app():
-    options = {
+    desired_caps = {
         "platformName": config.platformName,
         "deviceName": config.deviceName,
         "app": str(Path(config.app).absolute()),
         "appWaitActivity": config.appWaitActivity,
     }
     if config.platformVersion:
-        options["platformVersion"] = config.platformVersion
+        desired_caps["platformVersion"] = config.platformVersion
 
-    browser.config.driver = webdriver.Remote(config.remote_url, options)
+    options = UiAutomator2Options().load_capabilities(desired_caps)
+
+    browser.config.driver = webdriver.Remote(config.remote_url, options=options)
     browser.config.timeout = 10
 
     yield config.platformName.lower()
