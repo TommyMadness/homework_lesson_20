@@ -3,6 +3,7 @@ import allure
 from selene import browser, have, be
 from appium.webdriver.common.appiumby import AppiumBy
 from locators import (
+    article_title_locator,
     popup_close_button,
     skip_button_locators,
     search_button_locators,

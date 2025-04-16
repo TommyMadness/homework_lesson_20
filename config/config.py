@@ -9,11 +9,6 @@ CONTEXT = os.getenv("CONTEXT", "local_emulator")
 load_dotenv(dotenv_path=Path(f".env.{CONTEXT}"))
 load_dotenv(dotenv_path=".env.credentials", override=True)
 
-print("DEBUG ENV:")
-print("PLATFORM_NAME:", os.getenv("PLATFORM_NAME"))
-print("DEVICE_NAME:", os.getenv("DEVICE_NAME"))
-print("APP:", os.getenv("APP"))
-
 
 class Config(BaseSettings):
     platformName: str = Field(..., alias="PLATFORM_NAME")
