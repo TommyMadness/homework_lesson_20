@@ -1,33 +1,42 @@
-import pytest
 import os
-import allure
+import pytest
 from pathlib import Path
 
 from appium.options.android import UiAutomator2Options
 from selene import browser
 from appium import webdriver
-from config.config import config
+
+from config.config import config, credentials
 from utils.allure_attachments import (
     attach_screenshot,
     attach_page_source,
     attach_bstack_video,
 )
 
-IS_BSTACK = config.remote_url.startswith("http")
+CONTEXT = os.getenv("CONTEXT", "local_emulator")
+IS_BSTACK = CONTEXT == "bstack"
 
 
 @pytest.fixture(scope="function")
 def setup_app():
-    desired_caps = {
-        "platformName": config.platformName,
-        "deviceName": config.deviceName,
-        "app": str(Path(config.app).absolute()),
-        "appWaitActivity": config.appWaitActivity,
-    }
-    if config.platformVersion:
-        desired_caps["platformVersion"] = config.platformVersion
+    options = UiAutomator2Options()
+    options.platform_name = config.platformName
+    options.device_name = config.deviceName
+    options.app = config.app if IS_BSTACK else str(Path(config.app).absolute())
 
-    options = UiAutomator2Options().load_capabilities(desired_caps)
+    if config.platformVersion:
+        options.platform_version = config.platformVersion
+    if not IS_BSTACK:
+        options.app_wait_activity = config.appWaitActivity
+
+    if IS_BSTACK:
+        bstack_opts = {
+            "userName": credentials.BSTACK_USERNAME,
+            "accessKey": credentials.BSTACK_ACCESS_KEY,
+        }
+        if config.appiumVersion:
+            bstack_opts["appiumVersion"] = config.appiumVersion
+        options.set_capability("bstack:options", bstack_opts)
 
     browser.config.driver = webdriver.Remote(config.remote_url, options=options)
     browser.config.timeout = 10

@@ -12,6 +12,7 @@ load_dotenv(dotenv_path=".env.credentials", override=True)
 
 class Config(BaseSettings):
     platformName: str = Field(..., alias="PLATFORM_NAME")
+    appiumVersion: str | None = Field(None, alias="APPIUM_VERSION")
     deviceName: str = Field(..., alias="DEVICE_NAME")
     app: str = Field(..., alias="APP")
     remote_url: str = Field(..., alias="REMOTE_URL")
