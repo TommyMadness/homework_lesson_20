@@ -11,6 +11,7 @@ from utils.allure_attachments import (
     attach_screenshot,
     attach_page_source,
     attach_bstack_video,
+    attach_local_video,
 )
 
 CONTEXT = os.getenv("CONTEXT", "local_emulator")
@@ -38,14 +39,22 @@ def setup_app():
             bstack_opts["appiumVersion"] = config.appiumVersion
         options.set_capability("bstack:options", bstack_opts)
 
-    browser.config.driver = webdriver.Remote(config.remote_url, options=options)
+    driver = webdriver.Remote(config.remote_url, options=options)
+    browser.config.driver = driver
     browser.config.timeout = 10
+
+    if not IS_BSTACK:
+        driver.start_recording_screen()
 
     yield config.platformName.lower()
 
-    if IS_BSTACK:
-        attach_screenshot(browser)
-        attach_page_source(browser)
-        attach_bstack_video(browser.driver.session_id)
+    attach_screenshot(browser)
+    attach_page_source(browser)
 
-    browser.quit()
+    if IS_BSTACK:
+        attach_bstack_video(driver.session_id)
+    else:
+        raw_video = driver.stop_recording_screen()
+        attach_local_video(raw_video)
+
+    driver.quit()
